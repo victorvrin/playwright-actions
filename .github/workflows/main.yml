@@ -40,4 +40,9 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: test-artifacts
-          path: output
+          path: | 
+            output
+            output/videos/
+            output/wiki_cookies.json
+            
+            
