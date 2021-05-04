@@ -83,3 +83,16 @@ it("uploads a file", async({page}) => {
   await page.screenshot({path: `output\\images\\upl_file_screen_${Date.now()}_2.png`})
   fs.unlinkSync(fileName);
 })
+
+it.only("interacts with an iframe", async({page}) => {
+  await page.goto("https://demoqa.com/frames");
+
+  const frameElementHandle = await page.$('#frame2');
+  const iFrame = await frameElementHandle.contentFrame();
+  const innerText = await iFrame.innerText('#sampleHeading');
+  const headingHandle = await iFrame.$('#sampleHeading');
+
+  await headingHandle.screenshot({path: `output/images/inside_iframe_${Date.now()}.png`});
+
+  expect(innerText).toBe('This is a sample page');
+});
