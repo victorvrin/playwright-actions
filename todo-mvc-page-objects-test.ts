@@ -1,14 +1,17 @@
-import { it } from "@playwright/test";
+import { it } from "./fixtures";
 import { TodoPage } from "./pages/todoPage"
+import { webkit, devices } from "playwright"
+
 
 it("interacts with todomvc using page objects", async ({ browser }) => {
 
     const context = await browser.newContext({
-        recordVideo: {dir: `videos`}
+        recordVideo: {dir: `output/videos`}
     });
     const page = await context.newPage();
 
-    
+    page.pause();
+
     let todoPage = new TodoPage(page);
     let items = { 
         pencils: "Buy some pencils",
@@ -33,7 +36,26 @@ it("interacts with todomvc using page objects", async ({ browser }) => {
     await todoPage.checkItem(items.trash);
     console.log("Checked unchecked item");
 
-    await page.screenshot({path: `images/todo_mvc_${Date.now()}.png`});
+    await page.screenshot({path: `output/images/todo_mvc_${Date.now()}.png`});
 
     context.close();
 });
+
+it.only("takes a screenshot on ios", async() => {
+    const iPhone11 = devices['iPhone 11 Pro'];
+    const browser = await webkit.launch({
+        headless:false
+    });
+    const context = await browser.newContext({
+      viewport: iPhone11.viewport,
+      userAgent: iPhone11.userAgent,
+      geolocation: { longitude: 12.492507, latitude: 41.889938 },
+      permissions: ['geolocation'],
+    });
+    const page = await context.newPage();
+    await page.goto('https://maps.google.com');
+    await page.click('.ml-my-location-fab button');
+    await page.waitForRequest(/.*preview\/pwa/);
+    await page.screenshot({ path: 'output/images/colosseum-iphone.png' });
+    await browser.close();
+})

@@ -1,4 +1,4 @@
-import { it, expect, test } from "@playwright/test";
+import { it, expect, test } from "./fixtures";
 import fs from "fs";
 
 it("opens a simple web page", async ({ context, browserName }) => {
@@ -84,11 +84,12 @@ it("uploads a file", async({page}) => {
   fs.unlinkSync(fileName);
 })
 
-it.only("interacts with an iframe", async({page}) => {
+it("interacts with an iframe", async({page, browser}) => {
   await page.goto("https://demoqa.com/frames");
 
   const frameElementHandle = await page.$('#frame2');
   const iFrame = await frameElementHandle.contentFrame();
+
   const innerText = await iFrame.innerText('#sampleHeading');
   const headingHandle = await iFrame.$('#sampleHeading');
 
